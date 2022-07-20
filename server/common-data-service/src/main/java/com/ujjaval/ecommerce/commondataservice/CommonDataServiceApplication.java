@@ -12,6 +12,7 @@ public class CommonDataServiceApplication {
 
     public static void main(final String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(CommonDataServiceApplication.class, args);
-        context.getBean(CommonDataController.class).fillWithTestData();
+        CommonDataController commonDataController = context.getBean(CommonDataController.class);
+        commonDataController.fillWithTestData();
     }
 }
