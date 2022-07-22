@@ -2,6 +2,7 @@ package com.ujjaval.ecommerce.searchsuggestionservice.service;
 
 import com.ujjaval.ecommerce.searchsuggestionservice.dto.SearchSuggestionKeywordInfo;
 import com.ujjaval.ecommerce.searchsuggestionservice.util.Permutation;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,6 +16,7 @@ import java.net.http.HttpResponse;
 import java.util.*;
 
 @Service
+@Slf4j
 public class SearchSuggestionServiceImpl implements SearchSuggestionService {
     HashMap<String, List<SearchSuggestionKeywordInfo>> prefixKeywordsMap = new HashMap<>();
     List<SearchSuggestionKeywordInfo> defaultSearchSuggestionList = new LinkedList<>();
@@ -29,6 +31,7 @@ public class SearchSuggestionServiceImpl implements SearchSuggestionService {
 
     private void addJsonObjKeywordToMap(JSONObject jsonResponse, String key, String attributeName) throws JSONException {
         JSONArray jsonArray = parseJSONArray(jsonResponse, key);
+        log.info("{}-{}",key, jsonArray);
 
         for (int index = 0; index < jsonArray.length(); ++index) {
             JSONObject jsonObject = new JSONObject(jsonArray.get(index).toString());
@@ -44,6 +47,7 @@ public class SearchSuggestionServiceImpl implements SearchSuggestionService {
 
     private void addKeywordToMap(JSONObject jsonResponse, String key) throws JSONException {
         JSONArray jsonArray = parseJSONArray(jsonResponse, key);
+        log.info("productKeywords-{}",jsonArray);
 
         for (int index = 0; index < jsonArray.length(); ++index) {
             StringBuilder filterLink = new StringBuilder();
@@ -54,6 +58,7 @@ public class SearchSuggestionServiceImpl implements SearchSuggestionService {
 
     private void constructAndAddKeywordCombination(JSONObject jsonResponse, String key, String[] attributeNames) throws JSONException {
         JSONArray jsonArray = parseJSONArray(jsonResponse, key);
+        log.info("{}-{}",key, jsonArray);
 
         for (int index = 0; index < jsonArray.length(); ++index) {
             JSONObject jsonObject = new JSONObject(jsonArray.get(index).toString());
@@ -91,7 +96,7 @@ public class SearchSuggestionServiceImpl implements SearchSuggestionService {
     }
 
     public void loadSearchSuggestionToMap() {
-        String URL = System.getenv("COMMON_DATA_SERVICE_URL") + "/search-suggestion-list";
+        String URL = "http://localhost:8083" + "/search-suggestion-list";
 
         while (true) {
             try {
